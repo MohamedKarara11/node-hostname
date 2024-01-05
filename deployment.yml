@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-hostname-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: node-hostname
+  template:
+    metadata:
+      labels:
+        app: node-hostname
+    spec:
+      containers:
+      - name: node-hostname
+        image: gcr.io/project-1-405906/node-hostname:latest
+        ports:
+        - containerPort: 3000

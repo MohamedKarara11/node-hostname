@@ -1,8 +1,8 @@
-FROM node:10-alpine
-WORKDIR /
+FROM node:16-alpine
+WORKDIR /node-hostname
 COPY package*.json ./
-USER node
-RUN npm install
-COPY --chown=node:node . .
-EXPOSE 8080
-CMD [ "node", "app.js" ]
+RUN npm install --production
+RUN npm install http-errors
+COPY . .
+EXPOSE 3000
+CMD ["node", "app"]

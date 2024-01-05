@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"  # Redirect HTTP to HTTPS
+spec:
+  tls:
+  - secretName: certificate-secret-3  # Name of the Secret containing TLS certificate and key
+  rules:
+  - http:
+      paths:
+      - path: /  # Matches any path starting with "/path1"
+        pathType: Prefix
+        backend:
+          service:
+            name: http-service  # Name of the Kubernetes Service to route to
+            port: 
+              number: 80

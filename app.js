@@ -2,6 +2,8 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
+var http = require("http");
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -34,3 +36,13 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+
+http.createServer(function (request, response) {
+   // Send the HTTP header 
+   // HTTP Status: 200 : OK
+   // Content Type: text/plain
+   response.writeHead(200, {'Content-Type': 'text/plain'});
+   
+   // Send the response body as "Hello World"
+   response.end('Hello World\n');
+}).listen(3000);
