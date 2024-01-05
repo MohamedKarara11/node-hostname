@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 pipeline {
     agent any
 
@@ -9,7 +8,6 @@ pipeline {
                     url: 'https://github.com/MohamedKarara11/node-hostname.git'
             }
         }
-
         stage('Build Container Image') {
             steps {
                 script {
@@ -17,7 +15,6 @@ pipeline {
                 }
             }
         }
-
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId:'Dockerhub', passwordVariable:'DOCKER_PASSWORD', usernameVariable:'DOCKER_USERNAME')]) {
@@ -27,8 +24,7 @@ pipeline {
                 }
             }
         }
-		
-		stage('Deploy to Kubernetes') {
+	stage('Deploy to Kubernetes') {
             steps {
                 withKubeConfig([credentialsId: 'kubernetes-config']) {
                     sh "kubectl apply -f deployment.yml"
@@ -37,6 +33,5 @@ pipeline {
                 }
             }
         }
-
     }
 }
