@@ -1,6 +1,14 @@
 pipeline {
     agent any
 
+    environment {
+        // Define required environment variables
+        GCP_CREDENTIALS_ID = 'Google_Cloud'  // ID of your GCP service account credentials
+        CLUSTER_NAME = 'cluster-1'      // Name of the existing cluster
+        NAMESPACE = 'default'             // Namespace for deployment
+        IMAGE_NAME = 'mohamedkarara11/node-hostname:${env.BUILD_NUMBER}' // Image name and build number
+    }
+	
     stages {
         stage('Checkout from GitHub') {
             steps {
@@ -15,12 +23,20 @@ pipeline {
                 }
             }
         }
-	stage('Deploy to Kubernetes') {
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId:'Dockerhub', passwordVariable:'DOCKER_PASSWORD', usernameVariable:'DOCKER_USERNAME')]) {
+		    sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                    dockerImage.push()
+                }
+            }
+        }
+	stage('Deploy to Existing Cluster') {
             steps {
                 withKubeConfig([credentialsId: 'Kubernetes']) {
-                    sh "kubectl apply -f deployment.yml"
-                    sh "kubectl apply -f service.yml"
-                    sh "kubectl apply -f ingress.yml"
+                    sh "kubectl apply -f /home/karara_cloud_architecture/k8s/deployment.yml"
+                    sh "kubectl apply -f /home/karara_cloud_architecture/k8s/service.yml"
+                    sh "kubectl apply -f /home/karara_cloud_architecture/k8s/ingress.yml"
                 }
             }
         }
