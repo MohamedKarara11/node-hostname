@@ -1,6 +1,13 @@
 pipeline {
     agent any
-	
+
+    environment {
+        // Define required environment variables
+        CLUSTER_NAME = 'cluster-1'      // Name of the existing cluster
+        NAMESPACE = 'default'             // Namespace for deployment
+        IMAGE_NAME = "mohamedkarara11/node-hostname:${env.BUILD_NUMBER}" // Image name and build number
+        PROJECT_ID = 'project-1-405906'
+    }
     stages {
         stage('Checkout from GitHub') {
             steps {
@@ -24,10 +31,10 @@ pipeline {
         }
 	stage('Connect to K8s Cluster') {
 		steps {
-			withCredentials([file(credentialsId: '${Google_Cloud_2}', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+			withCredentials([file(credentialsId: 'Google_Cloud_2', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
 				sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}"
-				sh "gcloud config set project ${PROJECT_ID}"		    
-				sh "gcloud container clusters get-credentials ${CLUSTER_NAME} --zone us-central1-c --project ${PROJECT_ID}"
+				sh "gcloud config set project ${environment.PROJECT_ID}"		    
+				sh "gcloud container clusters get-credentials ${environment.CLUSTER_NAME} --zone us-central1-c --project ${environment.PROJECT_ID}"
 		 }
 	     }
 	}
