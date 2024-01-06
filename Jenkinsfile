@@ -1,13 +1,5 @@
 pipeline {
     agent any
-
-    environment {
-        // Define required environment variables
-        GCP_CREDENTIALS_ID = 'Google_Cloud_2'  // ID of your GCP service account credentials
-        CLUSTER_NAME = 'cluster-1'      // Name of the existing cluster
-        NAMESPACE = 'default'             // Namespace for deployment
-        IMAGE_NAME = "mohamedkarara11/node-hostname:${env.BUILD_NUMBER}" // Image name and build number
-    }
 	
     stages {
         stage('Checkout from GitHub') {
