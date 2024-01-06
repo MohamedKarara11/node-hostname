@@ -6,7 +6,7 @@ pipeline {
         GCP_CREDENTIALS_ID = 'Google_Cloud'  // ID of your GCP service account credentials
         CLUSTER_NAME = 'cluster-1'      // Name of the existing cluster
         NAMESPACE = 'default'             // Namespace for deployment
-        IMAGE_NAME = 'mohamedkarara11/node-hostname:${env.BUILD_NUMBER}' // Image name and build number
+        IMAGE_NAME = "mohamedkarara11/node-hostname:${env.BUILD_NUMBER}|" // Image name and build number
     }
 	
     stages {
@@ -34,9 +34,9 @@ pipeline {
 	stage('Deploy to Existing Cluster') {
             steps {
                 withKubeConfig([credentialsId: 'Kubernetes']) {
-                    sh "kubectl apply -f /home/karara_cloud_architecture/k8s/deployment.yml"
-                    sh "kubectl apply -f /home/karara_cloud_architecture/k8s/service.yml"
-                    sh "kubectl apply -f /home/karara_cloud_architecture/k8s/ingress.yml"
+                    sh "kubectl apply -f /home/karara_cloud_architecture/k8s/deployment.yml -n ${NAMESPACE}"
+                    sh "kubectl apply -f /home/karara_cloud_architecture/k8s/service.yml -n ${NAMESPACE}"
+                    sh "kubectl apply -f /home/karara_cloud_architecture/k8s/ingress.yml -n ${NAMESPACE}"
                 }
             }
         }
