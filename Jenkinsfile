@@ -38,6 +38,16 @@ pipeline {
 		 }
 	     }
 	}
+
+	stage('Deploy to Existing Cluster') {
+            steps {
+                withKubeConfig([credentialsId: 'Kubernetes']) {
+                    sh "kubectl apply -f /home/karara_cloud_architecture/k8s/deployment.yml -n ${NAMESPACE}"
+                    sh "kubectl apply -f /home/karara_cloud_architecture/k8s/service.yml -n ${NAMESPACE}"
+                    sh "kubectl apply -f /home/karara_cloud_architecture/k8s/ingress.yml -n ${NAMESPACE}"
+                }
+            }
+        }
 	    
     }
 }
