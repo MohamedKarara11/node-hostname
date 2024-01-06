@@ -22,25 +22,7 @@ pipeline {
                 }
             }
         }
-	stage('Connect to K8s Cluster') {
-		steps {
-			withCredentials([file(credentialsId: '${Google_Cloud_2}', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-				sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}"
-				sh "gcloud config set project ${PROJECT_ID}"		    
-				sh "gcloud container clusters get-credentials ${CLUSTER_NAME} --zone us-central1-c --project ${PROJECT_ID}"
 
-			}
-		}
-	}
-	stage('Deploy to Existing Cluster') {
-            steps {
-                withKubeConfig([credentialsId: 'Kubernetes']) {
-                    sh "kubectl apply -f /home/karara_cloud_architecture/k8s/deployment.yml -n ${NAMESPACE}"
-                    sh "kubectl apply -f /home/karara_cloud_architecture/k8s/service.yml -n ${NAMESPACE}"
-                    sh "kubectl apply -f /home/karara_cloud_architecture/k8s/ingress.yml -n ${NAMESPACE}"
-                }
-            }
-        }
 	    
     }
 }
