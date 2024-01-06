@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Define required environment variables
-        GCP_CREDENTIALS_ID = 'Google_Cloud'  // ID of your GCP service account credentials
+        GCP_CREDENTIALS_ID = 'Google_Cloud_2'  // ID of your GCP service account credentials
         CLUSTER_NAME = 'cluster-1'      // Name of the existing cluster
         NAMESPACE = 'default'             // Namespace for deployment
         IMAGE_NAME = "mohamedkarara11/node-hostname:${env.BUILD_NUMBER}" // Image name and build number
@@ -30,6 +30,16 @@ pipeline {
                 }
             }
         }
+	stage('Connect to K8s Cluster') {
+		steps {
+			withCredentials([file(credentialsId: '${GCP_CREDENTIALS_ID}', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+				sh "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}"
+				sh "gcloud config set project ${PROJECT_ID}"		    
+				sh "gcloud container clusters get-credentials ${CLUSTER_NAME} --zone us-central1-c --project ${PROJECT_ID}"
+
+			}
+		}
+	}
 	stage('Deploy to Existing Cluster') {
             steps {
                 withKubeConfig([credentialsId: 'Kubernetes']) {
@@ -39,5 +49,6 @@ pipeline {
                 }
             }
         }
+	    
     }
 }
